@@ -44,4 +44,4 @@ Route::middleware(['auth'])->prefix('siswa')->name('siswa.')->group(function () 
 });
 
 // Memuat rute modular untuk Admin Sekolah
-require base_path('app/Modules/admin_sekolah/routes/web.php');
+require base_path('app/Modules/AdminSekolah/routes/web.php');
