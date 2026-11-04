@@ -14,6 +14,15 @@
         $tagline  = $tagline  ?? $namaSekolah;
     }
 
+    // Judul halaman manajemen pengguna diisi dari nama route
+    if (request()->routeIs('admin.teachers.*')) {
+        $title    = 'Manajemen Pengguna - Guru';
+        $subtitle = 'Kelola data guru di sekolah Anda.';
+    } elseif (request()->routeIs('admin.students.*')) {
+        $title    = 'Manajemen Pengguna - Siswa';
+        $subtitle = 'Kelola data siswa di sekolah Anda.';
+    }
+
     // Nama route di bawah adalah usulan; menu tampil "#" sampai route-nya dibuat.
     $r  = fn ($name) => $name && \Illuminate\Support\Facades\Route::has($name) ? route($name) : '#';
     $on = fn (...$pola) => request()->routeIs(...$pola) ? 'on' : '';

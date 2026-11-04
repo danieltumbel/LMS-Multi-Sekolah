@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuperAdmin\TenantController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
 use App\Http\Controllers\Siswa\TugasController;
+use App\Livewire\Guru\Dashboard as GuruDashboard;
 
 use App\Livewire\Siswa\KelasSaya;
 use App\Livewire\Siswa\JelajahiKelas;
@@ -21,7 +22,7 @@ Route::get('/dashboard', function () {
         'super_admin' => view('SuperAdmin.dashboard'),
         'student' => redirect()->route('siswa.dashboard'),
         'school_admin' => redirect()->route('admin.dashboard'),
-        // TODO: Tambahkan redirect teacher
+        'teacher' => redirect()->route('guru.dashboard'),
         default => abort(403, 'Role tidak dikenali.'),
     };
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -77,6 +78,15 @@ Route::middleware(['auth', 'role:student'])
         // Detail dan Pengumpulan Tugas
         Route::get('/tugas/{assignment}', KumpulkanTugas::class)
             ->name('tugas.kumpul');
+    });
+
+// Rute khusus Guru
+Route::middleware(['auth', 'verified', 'role:teacher'])
+    ->prefix('guru')
+    ->name('guru.')
+    ->group(function () {
+        Route::get('/dashboard', GuruDashboard::class)
+            ->name('dashboard');
     });
 
 // Rute Modular Admin Sekolah
