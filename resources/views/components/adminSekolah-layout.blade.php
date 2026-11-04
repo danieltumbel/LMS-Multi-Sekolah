@@ -15,12 +15,23 @@
     }
 
     // Judul halaman manajemen pengguna diisi dari nama route
-    if (request()->routeIs('admin.teachers.*')) {
+    if (request()->routeIs('admin.teachers.create')) {
+        $title    = 'Tambah Guru';
+        $subtitle = null;
+    } elseif (request()->routeIs('admin.teachers.*')) {
         $title    = 'Manajemen Pengguna - Guru';
         $subtitle = 'Kelola data guru di sekolah Anda.';
     } elseif (request()->routeIs('admin.students.*')) {
         $title    = 'Manajemen Pengguna - Siswa';
         $subtitle = 'Kelola data siswa di sekolah Anda.';
+    }
+
+    if (request()->routeIs('admin.classes.create')) {
+        $title    = 'Tambah Kelas / Rombel';
+        $subtitle = null;
+    } elseif (request()->routeIs('admin.classes.*')) {
+        $title    = 'Kelas / Rombel';
+        $subtitle = 'Kelola kelas dan rombongan belajar di sekolah Anda.';
     }
 
     // Nama route di bawah adalah usulan; menu tampil "#" sampai route-nya dibuat.
@@ -196,6 +207,27 @@ body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--bg);colo
 .ak .w{font-size:11px;color:var(--muted);white-space:nowrap}
 .kosong{text-align:center;padding:26px 10px;color:var(--muted);font-size:12.5px}
 .tag2{color:#3b7be0;margin-top:4px;font-size:12px}
+
+/* ---- Form dua kolom (Tambah Guru, Tambah Kelas) ---- */
+.tf{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start}
+.tc{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 8px rgba(20,35,63,.05);padding:20px 22px}
+.tc h3{margin:0 0 6px;font-size:13px;font-weight:700}
+.fl{margin-top:14px}
+.fl label,.fl .lbl{display:block;font-size:11.5px;color:#41506b;margin-bottom:6px}
+.fl label b{color:#e5484d;font-weight:600}
+.fl input[type=text],.fl input[type=email],.fl input[type=tel],.fl input[type=number],.fl select{width:100%;height:40px;border:1px solid #d6e2f4;border-radius:8px;background:#fff;padding:0 12px;font:inherit;font-size:12px;color:var(--ink)}
+.fl input::placeholder{color:#a3b2c8}
+.fl input:focus-visible,.fl select:focus-visible{outline:2px solid #2f6fe4;border-color:#2f6fe4}
+.fl .bad{border-color:#e5484d}
+.er{display:block;color:#d93b3b;font-size:11px;margin-top:4px}
+.hint{display:block;color:var(--muted);font-size:11px;margin-top:5px}
+.fa{display:flex;justify-content:flex-end;gap:12px;margin-top:18px}
+.bt4{font:inherit;font-size:12.5px;font-weight:600;border-radius:9px;padding:10px 30px;cursor:pointer;text-decoration:none;display:inline-block;border:1px solid transparent}
+.bt4.gh{background:#fff;color:#2a3956;border-color:#d6e2f4}
+.bt4.pr{background:#1f6bff;color:#fff;box-shadow:0 3px 8px rgba(31,107,255,.3)}
+.bt4:disabled{opacity:.6;cursor:wait}
+.bt4:focus-visible{outline:2px solid #1f6bff;outline-offset:2px}
+@media (max-width:900px){.tf{grid-template-columns:1fr}}
 </style>
 </head>
 <body>

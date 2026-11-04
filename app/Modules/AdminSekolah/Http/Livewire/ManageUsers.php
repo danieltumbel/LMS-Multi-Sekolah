@@ -40,6 +40,8 @@ class ManageUsers extends Component
     public function mount(string $role = 'teacher'): void
     {
         $this->role = $role === 'student' ? 'student' : 'teacher';
+        // Dikirim dari halaman Tambah Guru setelah berhasil menyimpan
+        $this->kredensial = session('kredensial');
     }
 
     public function updatingQ(): void
@@ -87,7 +89,7 @@ class ManageUsers extends Component
             'nomor_induk.unique' => $label.' sudah terdaftar di sekolah ini.',
         ]);
 
-        $password = $data['nomor_induk'] !== '' ? $data['nomor_induk'] : Str::random(12);
+        $password = Str::random(12);
 
         // forceCreate: role, school_id, dan is_active sengaja tidak ada di $fillable
         User::forceCreate([

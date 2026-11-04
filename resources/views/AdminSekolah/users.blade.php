@@ -88,7 +88,11 @@
             <input type="search" wire:model.live.debounce.300ms="q" placeholder="Cari nama, {{ $noInduk }}, atau email..." aria-label="Cari pengguna">
         </label>
         <button type="button" class="bt3 out" disabled title="Fitur import segera hadir">Import CSV/Excel</button>
-        <button type="button" class="bt3 pri" wire:click="buka">+ Tambah {{ $guru ? 'Guru' : 'Siswa' }}</button>
+        @if ($guru)
+            <a href="{{ route('admin.teachers.create') }}" class="bt3 pri" style="text-decoration:none;display:inline-block">+ Tambah Guru</a>
+        @else
+            <button type="button" class="bt3 pri" wire:click="buka">+ Tambah Siswa</button>
+        @endif
     </div>
 
     <section class="card tcard2">
