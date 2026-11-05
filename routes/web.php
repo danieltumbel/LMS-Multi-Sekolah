@@ -6,6 +6,8 @@ use App\Http\Controllers\SuperAdmin\TenantController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
 use App\Http\Controllers\Siswa\TugasController;
 use App\Livewire\Guru\Dashboard as GuruDashboard;
+use App\Livewire\Guru\ClassIndex as GuruClassIndex;
+use App\Livewire\Guru\ClassDetail as GuruClassDetail;
 
 use App\Livewire\Siswa\KelasSaya;
 use App\Livewire\Siswa\JelajahiKelas;
@@ -87,7 +89,16 @@ Route::middleware(['auth', 'verified', 'role:teacher'])
     ->group(function () {
         Route::get('/dashboard', GuruDashboard::class)
             ->name('dashboard');
+
+        // Kelas milik guru
+        Route::get('/kelas', GuruClassIndex::class)
+            ->name('classes.index');
+
+        Route::get('/kelas/{kelas}', GuruClassDetail::class)
+            ->whereNumber('kelas')
+            ->name('classes.show');
     });
 
 // Rute Modular Admin Sekolah
+// Dashboard admin sekolah (Livewire) didefinisikan di file modul ini.
 require base_path('app/Modules/AdminSekolah/routes/web.php');

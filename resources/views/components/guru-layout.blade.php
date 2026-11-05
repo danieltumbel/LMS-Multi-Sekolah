@@ -2,6 +2,7 @@
 @php
     $user = request()->user();
     $namaUser = $user?->name ?? 'Guru';
+    $back = null;
 
     // Nama sekolah diambil dari data sekolah milik guru
     $namaSekolah = $sekolah ?: ($user?->school_id
@@ -10,6 +11,17 @@
 
     if (request()->routeIs('guru.dashboard')) {
         $subtitle = $subtitle ?? 'Selamat datang, '.$namaUser;
+    }
+
+    if (request()->routeIs('guru.classes.show')) {
+        // Judul = nama kelas (hanya kelas milik guru ini)
+        $title = \Illuminate\Support\Facades\DB::table('classes')
+            ->where('id', request()->route('kelas'))->where('guru_id', $user?->id)->value('nama') ?: 'Detail Kelas';
+        $subtitle = null;
+        $back     = route('guru.classes.index');
+    } elseif (request()->routeIs('guru.classes.*')) {
+        $title    = 'Daftar Kelas';
+        $subtitle = null;
     }
 
     // Nama route di bawah adalah usulan; menu tampil "#" sampai route-nya dibuat.
@@ -218,6 +230,8 @@ body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--bg);colo
 .tb .w2{margin-left:auto;font-size:10.5px;color:var(--muted);white-space:nowrap;padding-top:2px}
 .sec2{margin-top:6px}
 @media (max-width:1100px){.mid.m32b{grid-template-columns:1fr}}
+.back{margin-right:12px;color:#41506b;text-decoration:none;font-weight:400}
+.back:hover{color:#1f6bff}
 </style>
 </head>
 <body>
@@ -270,7 +284,7 @@ body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--bg);colo
   <main class="main">
     <header class="top">
       <div>
-        <h1>{{ $title }}</h1>
+        <h1>@if ($back)<a href="{{ $back }}" class="back" aria-label="Kembali ke daftar kelas">←</a>@endif{{ $title }}</h1>
         @if ($subtitle)<p>{{ $subtitle }}</p>@endif
       </div>
       <div class="tr">
