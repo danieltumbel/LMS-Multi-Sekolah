@@ -12,6 +12,8 @@ use App\Livewire\Guru\ClassDetail as GuruClassDetail;
 use App\Livewire\Siswa\KelasSaya;
 use App\Livewire\Siswa\JelajahiKelas;
 use App\Livewire\Siswa\KumpulkanTugas;
+use App\Livewire\Siswa\MataPelajaran as SiswaMapel;
+use App\Livewire\Siswa\MataPelajaranDetail as SiswaMapelDetail;
 
 // Halaman Login
 Route::get('/', function () {
@@ -68,6 +70,14 @@ Route::middleware(['auth', 'role:student'])
         // Dashboard Siswa (data dari database)
         Route::get('/dashboard', [SiswaDashboardController::class, 'index'])
             ->name('dashboard');
+
+        // Mata Pelajaran (kelas yang diikuti): daftar dan detail
+        Route::get('/mata-pelajaran', SiswaMapel::class)
+            ->name('mapel.index');
+
+        Route::get('/mata-pelajaran/{kelas}', SiswaMapelDetail::class)
+            ->whereNumber('kelas')
+            ->name('mapel.show');
 
         // Kelas
         Route::get('/kelas-saya', KelasSaya::class)

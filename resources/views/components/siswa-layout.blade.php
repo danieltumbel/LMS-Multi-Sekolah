@@ -1,15 +1,28 @@
 @props(['title' => 'Dashboard Siswa', 'subtitle' => null, 'tagline' => null, 'sekolah' => null, 'kelas' => null])
 @php
     $namaUser = request()->user()?->name ?? 'Siswa';
+    $fotoUser = request()->user()?->foto
+        ? \Illuminate\Support\Facades\Storage::disk('public')->url(request()->user()->foto)
+        : null;
     // Nama sekolah diambil dari data sekolah milik siswa
     $namaSekolah = $sekolah ?: (request()->user()?->school_id
         ? \Illuminate\Support\Facades\DB::table('schools')->where('id', request()->user()->school_id)->value('name')
         : null) ?: 'LMS Multi Tenant';
 
+    // Judul halaman Mata Pelajaran diisi dari nama route (halaman detail memakai breadcrumb)
+    if (request()->routeIs('siswa.mapel.index')) {
+        $title    = 'Mata Pelajaran';
+        $subtitle = 'Daftar mata pelajaran yang sedang kamu ikuti.';
+    } elseif (request()->routeIs('siswa.mapel.show')) {
+        $title    = '';
+        $subtitle = null;
+        $tagline  = null;
+    }
+
     // [label, nama route (null = belum ada halamannya), ikon]
     $menu = [
         ['Dashboard',      'siswa.dashboard',  'i-home'],
-        ['Mata Pelajaran', 'siswa.kelas-saya', 'i-book'],
+        ['Mata Pelajaran', 'siswa.mapel.index', 'i-book'],
         ['Tugas',          'siswa.tugas',      'i-task'],
         ['Ujian',          null,               'i-exam'],
         ['Materi',         null,               'i-folder'],
@@ -24,7 +37,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{{ $title }} – LMS</title>
+<title>{{ $title }} – SIKESMA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -161,6 +174,8 @@ body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--bg);colo
 .hd h3 .i{width:15px;height:15px;vertical-align:-2px;margin-right:6px;color:#e5484d}
 @media (max-width:1100px){.mid.m32{grid-template-columns:1fr}}
 @media (max-width:560px){.jd .r{grid-template-columns:1fr 1fr}.cards.c4{grid-template-columns:1fr}}
+.avatar{overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
 </style>
 </head>
 <body>
@@ -200,7 +215,7 @@ body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--bg);colo
     <nav class="menu">
       @foreach ($menu as [$label, $route, $icon])
         @php $ada = $route && \Illuminate\Support\Facades\Route::has($route); @endphp
-        <a href="{{ $ada ? route($route) : '#' }}" class="{{ $ada && request()->routeIs($route) ? 'on' : '' }}"><svg class="i"><use href="#{{ $icon }}"/></svg>{{ $label }}</a>
+        <a href="{{ $ada ? route($route) : '#' }}" class="{{ $ada && (request()->routeIs($route) || ($route === 'siswa.mapel.index' && request()->routeIs('siswa.mapel.*'))) ? 'on' : '' }}"><svg class="i"><use href="#{{ $icon }}"/></svg>{{ $label }}</a>
       @endforeach
     </nav>
     <form class="logout" method="POST" action="{{ route('logout') }}">
@@ -212,7 +227,7 @@ body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--bg);colo
   <main class="main">
     <header class="top">
       <div>
-        <h1>{{ $title }}</h1>
+        @if ($title !== '')<h1>{{ $title }}</h1>@endif
         @if ($subtitle)<p class="sub">{{ $subtitle }}</p>@endif
         @if ($tagline)<p class="tag">{{ $tagline }}</p>@endif
       </div>
@@ -220,7 +235,7 @@ body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--bg);colo
         <span class="bell" aria-label="Notifikasi"><svg class="i"><use href="#i-bell"/></svg><i></i></span>
         <details class="usermenu">
           <summary class="user">
-            <span class="avatar"><svg class="i"><use href="#i-users"/></svg></span>
+            <span class="avatar">@if ($fotoUser)<img src="{{ $fotoUser }}" alt="">@else<svg class="i"><use href="#i-users"/></svg>@endif</span>
             <span class="nm">{{ $namaUser }}<small>Siswa{{ $kelas ? ' · '.$kelas : '' }}</small></span>
             <svg class="i chev"><use href="#i-chev"/></svg>
           </summary>

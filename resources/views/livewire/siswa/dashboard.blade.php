@@ -30,7 +30,7 @@
 
     <section class="mid m32">
         <article class="card panel">
-            <div class="hd"><h3>Kelas Saya</h3><a href="{{ route('siswa.kelas-saya') }}" class="link">Lihat Semua ›</a></div>
+            <div class="hd"><h3>Kelas Saya</h3><a href="{{ route('siswa.mapel.index') }}" class="link">Lihat Semua ›</a></div>
             <p class="sub-date">{{ $hari }}</p>
 
             @if ($kelas->isEmpty())
@@ -45,7 +45,7 @@
                             <span class="mp"><span class="mpi {{ $nada[$loop->index % 4] }}"><svg class="i"><use href="#{{ $ikon[$nada[$loop->index % 4]] }}"/></svg></span>{{ $k->nama }}</span>
                             <span class="kl">{{ $k->mata_pelajaran }}</span>
                             <span class="rg">{{ $k->guru }}</span>
-                            <a href="{{ route('siswa.kelas-saya') }}" class="go">Buka</a>
+                            <a href="{{ route('siswa.mapel.index') }}" class="go">Buka</a>
                         </div>
                     @endforeach
                 </div>
