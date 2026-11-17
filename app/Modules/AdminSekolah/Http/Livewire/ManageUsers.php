@@ -11,6 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Models\School;
 
 /**
  * Manajemen pengguna sekolah: satu komponen untuk tab Guru (teacher) dan Siswa (student).
@@ -88,6 +89,11 @@ class ManageUsers extends Component
             'email.unique'       => 'Email sudah dipakai akun lain.',
             'nomor_induk.unique' => $label.' sudah terdaftar di sekolah ini.',
         ]);
+
+        if (School::sisaKuotaUser($admin->school_id) <= 0) {
+            $this->addError('email', 'Kuota pengguna sekolah sudah penuh. Hubungi Super Admin.');
+            return;
+        }
 
         $password = Str::random(12);
 

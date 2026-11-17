@@ -47,8 +47,10 @@ Route::middleware(['auth', 'role:super_admin'])
     ->name('super-admin.')
     ->group(function () {
         Route::resource('tenants', TenantController::class);
-        Route::patch('tenants/{tenant}/status', [TenantController::class, 'toggleStatus'])
-            ->name('tenants.status');
+        Route::patch('tenants/{tenant}/status', [TenantController::class, 'updateStatus'])
+        ->name('tenants.status');
+        Route::get('ringkasan', [\App\Http\Controllers\SuperAdmin\DashboardController::class, 'ringkasan'])
+        ->name('ringkasan');
         Route::view('/dashboard', 'SuperAdmin.dashboard')
             ->name('dashboard');
     });

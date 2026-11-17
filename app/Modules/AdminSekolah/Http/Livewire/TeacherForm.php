@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use App\Models\School;
 
 /**
  * Form "Tambah Guru". Guru ditugaskan ke satu kelas dengan mengisi kolom guru_id pada tabel classes.
@@ -69,6 +70,11 @@ class TeacherForm extends Component
             'mapel.required'       => 'Pilih mata pelajaran.',
             'class_id.required'    => 'Pilih kelas pengampu.',
         ]);
+
+        if (School::sisaKuotaUser($admin->school_id) <= 0) {
+            $this->addError('email', 'Kuota pengguna sekolah sudah penuh. Hubungi Super Admin.');
+            return;
+}
 
         // Kelas harus milik sekolah ini dan sesuai mata pelajaran yang dipilih
         $kelasId = $data['class_id'] !== '' ? (int) $data['class_id'] : null;

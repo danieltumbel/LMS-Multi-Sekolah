@@ -11,10 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias([
-        'role' => \App\Http\Middleware\CheckRole::class,
+   ->withMiddleware(function (Middleware $middleware): void {
+    $middleware->alias([
+        'role'          => \App\Http\Middleware\CheckRole::class,
+        'tenant.active' => \App\Http\Middleware\EnsureTenantActive::class,
     ]);
+
+    $middleware->appendToGroup('web', \App\Http\Middleware\EnsureTenantActive::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -124,7 +124,7 @@ form{width:100%;max-width:320px;margin:0 auto}
     <span class="circle c3"></span><span class="circle c4"></span><span class="circle c5"></span>
     <h2>New Here?</h2>
     <p>Sign up and discover a great amount of new opportunities!</p>
-    <a href="{{ route('register') }}" class="btn register">Register</a>
+    {{-- <a href="{{ route('register') }}" class="btn register">Register</a> --}}
   </aside>
 </main>
 

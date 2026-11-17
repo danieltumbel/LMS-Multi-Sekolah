@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use App\Models\Kelas;
 use App\Models\School;
 use App\Models\User;
@@ -71,4 +72,41 @@ class DashboardController extends Controller
 
         return view('SuperAdmin.dashboard', compact('stats', 'chart', 'schools', 'activities'));
     }
+
+    public function ringkasan()
+{
+    $perStatus = DB::table('schools')->select('status', DB::raw('count(*) as total'))
+        ->groupBy('status')->pluck('total', 'status');
+    $perPeran = DB::table('users')->select('role', DB::raw('count(*) as total'))
+        ->groupBy('role')->pluck('total', 'role');
+
+    $aktivitas = DB::table('audit_logs as l')
+        ->leftJoin('schools as s', 's.id', '=', 'l.school_id')
+        ->orderByDesc('l.id')->limit(5)
+        ->get(['l.action', 'l.description', 'l.created_at', 's.name as sekolah']);
+
+    return response()->json([
+        'sekolah' => [
+            'total'        => (int) $perStatus->sum(),
+            'aktif'        => (int) ($perStatus['active'] ?? 0),
+            'ditangguhkan' => (int) ($perStatus['suspended'] ?? 0),
+            'nonaktif'     => (int) ($perStatus['inactive'] ?? 0),
+        ],
+        'pengguna' => [
+            'total'         => (int) $perPeran->sum(),
+            'admin_sekolah' => (int) ($perPeran['school_admin'] ?? 0),
+            'guru'          => (int) ($perPeran['teacher'] ?? 0),
+            'siswa'         => (int) ($perPeran['student'] ?? 0),
+        ],
+        'kelas' => DB::table('classes')->count(),
+        'penggunaan' => [
+            'pengguna_baru_30_hari' => DB::table('users')->where('created_at', '>=', now()->subDays(30))->count(),
+            'tugas_dikumpul_7_hari' => DB::table('submissions')->where('submitted_at', '>=', now()->subDays(7))->count(),
+            'tenant_hampir_penuh'   => DB::table('schools')
+                ->whereRaw('(select count(*) from users where users.school_id = schools.id) >= schools.max_users * 0.9')
+                ->count(),
+        ],
+        'aktivitas_terbaru' => $aktivitas,
+    ]);
+}
 }
